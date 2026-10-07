@@ -10,6 +10,12 @@
 {{ with .Params.kicker }}{{ $kicker = . }}{{ end }}
 {{ if not $kicker }}{{ $kicker = partial "first-value.html" .Params.categories }}{{ end }}
 
+{{/* Author: on a Micro.blog Family blog, .Params.author is the member who
+     posted (name, username, avatar). Otherwise fall back to the blog's own
+     author — via .Site.Params.author, since .Site.Author is gone in Hugo 0.156+. */}}
+{{ $author := .Site.Params.author }}
+{{ with .Params.author }}{{ if reflect.IsMap . }}{{ with .name }}{{ $author = $.Params.author }}{{ end }}{{ end }}{{ end }}
+
 {{/* GetTerms is shape-agnostic; .Params.categories may be a bare string. */}}
 <article class="article h-entry {{ range .GetTerms "categories" }} {{ .LinkTitle | urlize | lower }}{{ end }}">
 
@@ -41,12 +47,16 @@
     <p class="standfirst">{{ . | markdownify }}</p>
     {{ end }}
 
+    {{/* Avatar and name left, publish date right — RevenueCat's byline. */}}
     <div class="article-byline">
-      <a href="{{ .Permalink }}" class="u-url">
-        <time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">
-          {{ partial "dateformat/long" . }}
-        </time>
-      </a>
+      {{ with $author }}
+      <div class="byline-author p-author h-card">
+        {{ with .avatar }}<img class="byline-author__avatar u-photo" src="{{ . }}" alt="" width="50" height="50">{{ end }}
+        <span class="byline-author__name p-name">{{ .name }}</span>
+      </div>
+      {{ end }}
+      {{/* One line on purpose: the time's 4px margin is the only gap after "Published". */}}
+      <p class="byline-date">Published<a href="{{ .Permalink }}" class="u-url"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ partial "dateformat/long" . | strings.TrimSpace }}</time></a></p>
     </div>
 
     {{ partial "share.html" . }}

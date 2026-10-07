@@ -229,19 +229,49 @@ a:hover { color: var(--accent-dark); text-decoration: underline; }
   font-weight: 400;
 }
 
+/* Layout and spacing measured from RevenueCat's blog byline. The avatar is
+   sized down from their 54px, and the text keeps this theme's 14px byline. */
 .article-byline {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  column-gap: 40px;
   margin: 0 0 20px;
-  color: var(--ink-tertiary);
-  font-size: 14px;
 }
 
-.article-byline a { color: var(--ink-tertiary); }
-.article-byline a:hover { color: var(--ink); }
-.byline-sep { color: var(--rule); }
+.byline-author {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.byline-author__avatar {
+  flex: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.byline-author__name {
+  margin-left: 16px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.byline-date {
+  margin: 0;
+  color: var(--ink-secondary);
+  font-size: 14px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.byline-date a { color: var(--ink); }
+.byline-date time { margin-left: 4px; font-weight: 500; }
 
 /* --- Share row ------------------------------------------------------------ */
 
@@ -673,6 +703,12 @@ a:hover { color: var(--accent-dark); text-decoration: underline; }
   .category-title { font-size: 27px; }
   .term__name { font-size: 20px; }
   .stories { padding-top: 32px; }
+}
+
+/* RevenueCat's breakpoint for the byline: below 768px the date takes its own
+   line under the author. */
+@media (max-width: 767px) {
+  .byline-date { flex-basis: 100%; margin-top: 16px; line-height: 21px; }
 }
 
 /* --- Print ---------------------------------------------------------------- */
