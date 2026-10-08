@@ -52,7 +52,11 @@
       {{ with $author }}
       <div class="byline-author p-author h-card">
         {{ with .avatar }}<img class="byline-author__avatar u-photo" src="{{ . }}" alt="" width="50" height="50">{{ end }}
+        {{ with .username }}
+        <a class="byline-author__name p-name u-url" href="https://micro.blog/{{ . }}">{{ $author.name }}</a>
+        {{ else }}
         <span class="byline-author__name p-name">{{ .name }}</span>
+        {{ end }}
       </div>
       {{ end }}
       {{/* One line on purpose: the time's 4px margin is the only gap after "Published". */}}
