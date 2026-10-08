@@ -270,8 +270,7 @@ a:hover { color: var(--accent-dark); text-decoration: underline; }
   white-space: nowrap;
 }
 
-.byline-date a { color: var(--ink); }
-.byline-date time { margin-left: 4px; font-weight: 500; }
+.byline-date time { margin-left: 4px; color: var(--ink); font-weight: 500; }
 
 /* --- Share row ------------------------------------------------------------ */
 
