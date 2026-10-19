@@ -25,7 +25,7 @@
     <meta property="og:description" content="{{ $description | truncate 125 }}">
     {{- with partial "first-value.html" .Params.photos -}}
       <meta name="twitter:image" content="{{ . }}">
-      <meta property="og:image" content="https://avatars.micro.blog/avatars/2026/37/1965015.jpg">
+      <meta property="og:image" content="{{ . }}">
     {{- end -}}
   {{- end -}}
 
