@@ -23,11 +23,17 @@
     <meta name="description" content="{{ $description }}">
     <meta name="twitter:description" content="{{ $description | truncate 125 }}">
     <meta property="og:description" content="{{ $description | truncate 125 }}">
-    {{- with partial "first-value.html" .Params.photos -}}
-      <meta name="twitter:image" content="{{ . }}">
-      <meta property="og:image" content="{{ . }}">
-    {{- end -}}
   {{- end -}}
+
+  {{/* og:image: AltStore avatar by default, Micro.blog's generated banner
+       once it exists, and the post's first photo if it has one. Micro.blog's
+       own image tags are stripped from microblog_head.html below so there's
+       only ever one og:image. */}}
+  {{- $ogImage := "https://avatars.micro.blog/avatars/2026/37/1965015.jpg" -}}
+  {{- with .Params.opengraph -}}{{- with .image -}}{{- $ogImage = . -}}{{- end -}}{{- end -}}
+  {{- with partial "first-value.html" .Params.photos -}}{{- $ogImage = . -}}{{- end -}}
+  <meta name="twitter:image" content="{{ $ogImage }}">
+  <meta property="og:image" content="{{ $ogImage }}">
 
   <title>{{ block "title" . }}{{ if .IsHome }}{{ .Site.Title }}{{ else if .Title }}{{ .Title }} | {{ .Site.Title }}{{ else }}{{ delimit (split (.Summary | plainify | htmlUnescape) " " | first 5) " " }} … | {{ .Site.Title }}{{ end }}{{ end }}</title>
   <link rel="canonical" href="{{ .Permalink }}">
@@ -43,8 +49,10 @@
   {{ end }}
 
   {{/* Micro.blog's favicon is the avatar flattened to a square; drop it for
-       altstore.io's own rounded one below. */}}
-  {{ partial "microblog_head.html" . | replaceRE `<link rel="(shortcut )?icon"[^>]*>\s*` "" | safeHTML }}
+       altstore.io's own rounded one below. Also drop Micro.blog's og:image and
+       twitter:image tags, which fall back to the post author's avatar; the
+       og:image block above handles images instead. */}}
+  {{ partial "microblog_head.html" . | replaceRE `<link rel="(shortcut )?icon"[^>]*>\s*` "" | replaceRE `<meta (property|name)="(og|twitter):image[^"]*"[^>]*>\s*` "" | safeHTML }}
 
   <link rel="icon" href="{{ "images/favicon.png" | relURL }}" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="{{ "images/webclip.png" | relURL }}">
