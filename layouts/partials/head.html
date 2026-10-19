@@ -43,8 +43,13 @@
   {{ end }}
 
   {{/* Micro.blog's favicon is the avatar flattened to a square; drop it for
-       altstore.io's own rounded one below. */}}
-  {{ partial "microblog_head.html" . | replaceRE `<link rel="(shortcut )?icon"[^>]*>\s*` "" | safeHTML }}
+       altstore.io's own rounded one below.
+
+       The Open Graph Basics plugin points og:image at a card Micro.blog
+       generates on S3, which is served with an empty Content-Type. Meta
+       (Threads, Facebook) rejects it and falls back to the byline avatar, so
+       route it through Micro.blog's photo proxy, which serves image/png. */}}
+  {{ partial "microblog_head.html" . | replaceRE `<link rel="(shortcut )?icon"[^>]*>\s*` "" | replaceRE `(<meta property="og:image" content=")(https://s3\.amazonaws\.com/micro\.blog/)` "${1}https://micro.blog/photos/600x/${2}" | safeHTML }}
 
   <link rel="icon" href="{{ "images/favicon.png" | relURL }}" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="{{ "images/webclip.png" | relURL }}">
